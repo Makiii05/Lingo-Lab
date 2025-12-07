@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - LingoLab</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style> body { font-family: 'Inter', sans-serif; } </style>
+</head>
+<body class="bg-slate-50 min-h-screen flex flex-col justify-center items-center p-4">
+
+    <div class="w-full max-w-md">
+
+        <div class="bg-white shadow-xl rounded-2xl border border-slate-100 mb-6">
+            <div class="p-6 md:p-10">
+
+                <div class="flex items-center mb-8">
+                    <div class="w-10 h-10 bg-indigo-600 rounded-lg flex items-center justify-center text-white font-bold text-xl me-3">
+                        L
+                    </div>
+                    <div>
+                        <h2 class="text-2xl font-bold text-slate-900">Create Account</h2>
+                        <p class="text-slate-500 text-sm">Start your free trial today</p>
+                    </div>
+                </div>
+
+                <form action="#" method="POST">
+                    {% csrf_token %}
+                    <div class="relative mb-5">
+                        <input name="username" type="text" id="fullname" placeholder="Full Name" required class="peer w-full border border-gray-300 rounded-xl px-4 pt-5 pb-2 text-gray-900 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all placeholder-transparent" />
+                        <label for="fullname" class="absolute left-4 top-3.5 text-gray-500 text-xs transition-all peer-placeholder-shown:top-4 peer-placeholder-shown:text-gray-400 peer-placeholder-shown:text-base peer-focus:top-2 peer-focus:text-xs peer-focus:text-indigo-600">
+                            Full Name
+                        </label>
+                    </div>
+
+                    <div class="relative mb-5">
+                        <input name="email" type="email" id="email" placeholder="Email Address" required class="peer w-full border border-gray-300 rounded-xl px-4 pt-5 pb-2 text-gray-900 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all placeholder-transparent" />
+                        <label for="email" class="absolute left-4 top-3.5 text-gray-500 text-xs transition-all peer-placeholder-shown:top-4 peer-placeholder-shown:text-gray-400 peer-placeholder-shown:text-base peer-focus:top-2 peer-focus:text-xs peer-focus:text-indigo-600">
+                            Email Address
+                        </label>
+                    </div>
+
+                    <div class="relative mb-5">
+                        <input name="password" type="password" id="password" placeholder="Password" required class="peer w-full border border-gray-300 rounded-xl px-4 pt-5 pb-2 text-gray-900 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all placeholder-transparent" />
+                        <label for="password" class="absolute left-4 top-3.5 text-gray-500 text-xs transition-all peer-placeholder-shown:top-4 peer-placeholder-shown:text-gray-400 peer-placeholder-shown:text-base peer-focus:top-2 peer-focus:text-xs peer-focus:text-indigo-600">
+                            Password
+                        </label>
+                    </div>
+
+                    <div class="relative mb-5">
+                        <input name="confirmation" type="password" id="confirmPassword" placeholder="Confirm Password" required class="peer w-full border border-gray-300 rounded-xl px-4 pt-5 pb-2 text-gray-900 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all placeholder-transparent"/>
+                        <label for="confirmPassword" class="absolute left-4 top-3.5 text-gray-500 text-xs transition-all peer-placeholder-shown:top-4 peer-placeholder-shown:text-gray-400 peer-placeholder-shown:text-base peer-focus:top-2 peer-focus:text-xs peer-focus:text-indigo-600">
+                            Confirm Password
+                        </label>
+                    </div>
+
+                    <button type="submit" class="w-full py-3 font-bold text-white bg-indigo-600 rounded-xl shadow-lg shadow-indigo-200 hover:bg-indigo-700 hover:shadow-indigo-300 transition-all transform active:scale-95">
+                        Sign Up
+                    </button>
+
+                    <div class="text-center mt-6">
+                        <p class="text-slate-500 text-sm">
+                            Already have an account? 
+                            <a href="{% url 'signin' %}" class="text-indigo-600 font-semibold hover:text-indigo-700">Sign in</a>
+                        </p>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="text-center">
+            <div class="relative mb-6">
+                <div class="h-px bg-slate-200 w-full"></div>
+                <span class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-slate-50 px-2 text-slate-400 text-xs uppercase font-medium tracking-wider">
+                    Or continue with
+                </span>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+                <button class="flex items-center justify-center py-2.5 text-sm font-medium bg-white border border-slate-200 rounded-xl shadow-sm hover:bg-slate-50 transition-colors">
+                    <i class="bi bi-google me-2 text-red-500"></i> Google
+                </button>
+                <button class="flex items-center justify-center py-2.5 text-sm font-medium bg-white border border-slate-200 rounded-xl shadow-sm hover:bg-slate-50 transition-colors">
+                    <i class="bi bi-github me-2 text-slate-900"></i> Github
+                </button>
+            </div>
+        </div>
+
+    </div>
+</body>
+</html>

@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>LearnerTracker</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <script src="https://unpkg.com/lucide@latest"></script>
+    </head>
+    <body class="min-h-screen bg-white">
+    <div class="relative bg-slate-900 overflow-hidden">
+        <div class="absolute inset-0">
+            <img class="w-full h-full object-cover opacity-20" src="https://images.unsplash.com/photo-1503676260728-1c00da094a0b?ixlib=rb-1.2.1&auto=format&fit=crop&w=1920&q=80" alt="Students reading"/>
+            <div class="absolute inset-0 bg-gradient-to-r from-slate-900 to-slate-800 mix-blend-multiply"></div>
+        </div>
+
+        <div class="relative max-w-7xl mx-auto py-24 px-4 sm:py-32 sm:px-6 lg:px-8 flex flex-col items-center text-center" id="top">
+            <div class="inline-flex items-center rounded-full bg-indigo-900/50 px-3 py-1 mb-8 border border-indigo-500/50 backdrop-blur-sm">
+                <span class="text-sm font-medium text-indigo-200">Blog</span>
+            </div>
+            <h1 class="text-4xl font-extrabold tracking-tight text-white sm:text-5xl lg:text-6xl">
+                LingoLab
+            </h1>
+            <p class="mt-6 text-xl text-slate-300 max-w-3xl">
+                A comprehensive system to track, analyze, and improve reading literacy. Bridging the gap between educators and learners through data-driven insights.
+            </p>
+            <div class="mt-12 flex flex-col sm:flex-row gap-6 w-full max-w-lg justify-center">
+                <a href="/scanner" class="group relative px-8 py-4 bg-teal-500 hover:bg-teal-400 text-slate-900 font-bold rounded-xl shadow-lg hover:shadow-teal-500/25 transition-all duration-200 transform hover:-translate-y-1 flex items-center justify-center gap-3">
+                    <i data-lucide="qr-code" class="w-6 h-6"></i>
+                    <div class="text-left">
+                        <div class="text-xs uppercase tracking-wider opacity-75">Access Tools</div>
+                        <div class="text-lg">I'm a Learner</div>
+                    </div>
+                </a>
+                <a href="{% url 'signin' %}" target="_blank" class="group relative px-8 py-4 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-xl shadow-lg hover:shadow-indigo-600/25 transition-all duration-200 transform hover:-translate-y-1 flex items-center justify-center gap-3">
+                    <i data-lucide="users" class="w-6 h-6"></i>
+                    <div class="text-left">
+                        <div class="text-xs uppercase tracking-wider opacity-75">View Dashboard</div>
+                        <div class="text-lg">I'm a Mentor</div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- BLOG CONTENT -->
+    <article class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <div class="prose prose-lg text-slate-600 mx-auto">
+            <!-- About Statistics -->
+            <div class="flex items-center justify-center gap-2 mb-8">
+                <span class="h-px w-12 bg-slate-300"></span>
+                <span class="text-slate-400 uppercase tracking-widest text-sm font-semibold">Context</span>
+                <span class="h-px w-12 bg-slate-300"></span>
+            </div>
+            <h2 class="text-3xl sm:text-4xl font-bold text-slate-900 text-center mb-12">
+                The Silent Crisis: <span class="text-indigo-600">Reading Literacy</span> in the Philippines
+            </h2>
+            <div class="grid md:grid-cols-2 gap-8 mb-16">
+                <div class="bg-red-50 p-8 rounded-3xl border border-red-100 shadow-sm">
+                    <div class="w-12 h-12 bg-red-100 rounded-2xl flex items-center justify-center mb-6">
+                        <i data-lucide="trending-down" class="w-6 h-6 text-red-600"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-3">PISA Rankings</h3>
+                    <p class="text-slate-700 leading-relaxed">
+                        Recent PISA results place the Philippines near the bottom in reading comprehension. The majority of 15-year-olds fall below minimum proficiency, struggling with complex texts.
+                    </p>
+                </div>
+                <div class="bg-blue-50 p-8 rounded-3xl border border-blue-100 shadow-sm">
+                    <div class="w-12 h-12 bg-blue-100 rounded-2xl flex items-center justify-center mb-6">
+                        <i data-lucide="book-open" class="w-6 h-6 text-blue-600"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-3">The "Reading Poverty"</h3>
+                    <p class="text-slate-700 leading-relaxed">
+                        The World Bank highlights "learning poverty": children unable to read a simple story by age 10. Solving this requires active monitoring of fluency, speed, and comprehension.
+                    </p>
+                </div>
+            </div>
+
+            <!-- About LingoLab -->
+            <h3 class="text-2xl font-bold text-slate-900 mb-6">How LingoLab Makes a Difference</h3>
+            <p class="mb-8 text-lg leading-relaxed">
+                <strong>LingoLab</strong> digitizes the observation process so educators can focus on learners—not paperwork.
+            </p>
+
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-xl overflow-hidden mb-12">
+                <div class="grid sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-slate-200">
+                    <div class="p-6 text-center">
+                        <div class="text-4xl font-bold text-indigo-600 mb-2">Real-time</div>
+                        <div class="text-sm font-medium text-slate-500 uppercase tracking-wide">Scoring & Logs</div>
+                    </div>
+
+                    <div class="p-6 text-center">
+                        <div class="text-4xl font-bold text-indigo-600 mb-2">QR</div>
+                        <div class="text-sm font-medium text-slate-500 uppercase tracking-wide">Instant Access</div>
+                    </div>
+
+                    <div class="p-6 text-center">
+                        <div class="text-4xl font-bold text-indigo-600 mb-2">Data</div>
+                        <div class="text-sm font-medium text-slate-500 uppercase tracking-wide">Long-term Trends</div>
+                    </div>
+                </div>
+            </div>
+
+            <p class="text-slate-600 mb-6">Our system provides two core interfaces based on the manual assessment workflow:</p>
+            <ul class="space-y-4 mb-12">
+                <li class="flex items-start">
+                    <i data-lucide="clipboard-list" class="w-6 h-6 text-indigo-500 mt-1"></i>
+                    <div class="ml-4">
+                        <strong class="text-slate-900 block">Assessment Interface (Observer)</strong>
+                        <span class="text-slate-600">
+                            Allows the evaluator (parent or teacher) to manually input reading performance metrics such as reading speed,
+                            stutter count, repeated words, and pronunciation difficulty after each session.
+                        </span>
+                    </div>
+                </li>
+
+                <li class="flex items-start">
+                    <i data-lucide="mic" class="w-6 h-6 text-teal-500 mt-1"></i>
+                    <div class="ml-4">
+                        <strong class="text-slate-900 block">Reading Interface (Learner)</strong>
+                        <span class="text-slate-600">
+                            The learner reads letters, syllables, or words presented on the screen, while the observer monitors the session
+                            and inputs the data for analysis.
+                        </span>
+                    </div>
+                </li>
+            </ul>
+
+            <div class="bg-slate-900 text-white p-8 rounded-2xl relative overflow-hidden">
+                <div class="absolute top-0 right-0 -mt-4 -mr-4 w-24 h-24 bg-indigo-500 rounded-full opacity-20 blur-xl"></div>
+                <blockquote class="relative z-10">
+                    <p class="text-xl font-medium italic mb-4">"Literacy is a bridge from misery to hope."</p>
+                    <footer class="text-indigo-300 font-semibold">— Kofi Annan</footer>
+                </blockquote>
+            </div>
+        </div>
+    </article>
+    <!-- FOOTER -->
+    <footer class="bg-slate-50 border-t border-slate-200 py-12 mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-slate-500">
+            <p class="font-semibold text-slate-900 mb-2">LingoLab</p>
+            <p class="text-sm">Helping the Philippines read, one word at a time.</p>
+
+            <div class="mt-6 flex justify-center gap-4 text-sm">
+                <a href="#top" class="hover:text-indigo-600 transition-colors">
+                    Back to Top
+                </a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        lucide.createIcons();
+    </script>
+    </body>
+</html>

@@ -1,0 +1,469 @@
+{% extends 'Lingolab/components/layout.html' %}
+
+{% block body %}
+    <div class="flex gap-6">
+    
+    <!-- LEFT: SCORING (scrollable) -->
+    <div class="flex-1 h-[85vh] overflow-y-auto pr-3 space-y-6">
+        <h1 class="text-2xl font-bold text-slate-900">Session Scoring</h1>
+
+        <div class="bg-white rounded-xl shadow-lg border border-slate-100">
+            <div class="p-6">
+                <!-- Dynamic Repeating Items -->
+                <div id="items-container" class="space-y-10">
+                    
+                    {% if data.type == "sentences" %}
+                    {% for item in data.question %}    
+                    <div class="p-5 border border-slate-200 rounded-xl bg-slate-50">
+                        <h3 class="text-lg font-semibold text-indigo-600 mb-4"> {{forloop.counter}}. <span class="font-bold">{{ item|title }}</span></h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700">Pauses</label>
+                                <input type="number" name="pauses" min="0" value="0"
+                                    class="pauses_input mt-1 block w-full border border-slate-300 rounded-xl shadow-sm py-2 px-3 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700">Speed (WPM)</label>
+                                <div class="flex gap-2">
+                                    <input type="number" name="speed" min="0" value="0"
+                                    class="speed_input mt-1 block w-full border border-slate-300 rounded-xl shadow-sm py-2 px-3 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" readonly>
+                                    <button type="button" class="wpm_start_btn flex-1 inline-flex justify-center py-2 px-3 border border-transparent shadow-sm text-sm font-medium rounded-xl text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-colors mt-1">
+                                        <i class="bi bi-play-fill mr-1"></i>Start
+                                    </button>
+                                    <button type="button" class="wpm_stop_btn flex-1 inline-flex justify-center py-2 px-3 border border-transparent shadow-sm text-sm font-medium rounded-xl text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed mt-1" disabled>
+                                        <i class="bi bi-stop-fill mr-1"></i>Stop
+                                    </button>
+                                    <input type="hidden" name="wpm_time" class="wpm_time" value="0">
+                                </div>
+                                
+                                <p class="text-xs text-slate-500 mt-1 wpm_timer">00:00</p>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700">Stutters</label>
+                                <input type="number" name="stutters" min="0" value="0"
+                                    class="stutters_input mt-1 block w-full border border-slate-300 rounded-xl shadow-sm py-2 px-3 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700">Repetition</label>
+                                <input type="number" name="repetition" min="1" max="10" value="0"
+                                    class="repetition_input mt-1 block w-full border border-slate-300 rounded-xl shadow-sm py-2 px-3 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                    {% elif data.type == "words" %}
+                    {% for item in data.question %}    
+                    <div class="p-5 border border-slate-200 rounded-xl bg-slate-50">
+                        <h3 class="text-lg font-semibold text-indigo-600 mb-4"> {{forloop.counter}}. <span class="font-bold">{{ item|title }}</span><i class="bi bi-volume-up-fill ml-2" onclick="getAudio('{{ item }}')"></i></h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700">Correctness</label>
+                                <select name="correctness" required class="correctness_select select mt-1 block w-full border border-slate-300 rounded-xl shadow-sm py-2 px-3 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                                    <option disabled selected>Select Score</option>
+                                    <option value="4">4 - Confident</option>
+                                    <option value="3">3 - Slightly Confident</option>
+                                    <option value="2">2 - Correct</option>
+                                    <option value="1">1 - Partially Correct</option>
+                                    <option value="0">0 - Incorrect</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700">Pronunciation</label>
+                                <select name="pronunciation" required class="pronunciation_select select mt-1 block w-full border border-slate-300 rounded-xl shadow-sm py-2 px-3 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                                    <option disabled selected>Select Score</option>
+                                    <option value="2">2 - Correct</option>
+                                    <option value="1">1 - Partially Correct</option>
+                                    <option value="0">0 - Incorrect</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700">Stutters</label>
+                                <input type="number" name="stutters" min="0" value="0"
+                                    class="stutters_input mt-1 block w-full border border-slate-300 rounded-xl shadow-sm py-2 px-3 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700">Repetition</label>
+                                <input type="number" name="repetition" min="1" max="10" value="0"
+                                    class="repetition_input mt-1 block w-full border border-slate-300 rounded-xl shadow-sm py-2 px-3 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                    {% endif %}
+                </div>
+                <div>
+                    <label for="comments" class="block text-sm font-medium text-slate-700">Mentor's Comments</label>
+                    <textarea id="comments" rows="4"
+                        class="mt-1 block w-full border border-slate-300 rounded-xl shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                        placeholder="Additional observations..."></textarea>
+                </div>
+                <div class="flex justify-end pt-4">
+                    <button type="button" onclick="window.history.back()" class="mr-3 inline-flex justify-center py-2 px-4 border border-slate-300 shadow-sm text-sm font-medium rounded-xl text-slate-700 bg-white hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors">
+                        Cancel
+                    </button>
+                    <button id="view_score_button"  class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-xl text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors">
+                        Review Score
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- RIGHT: INFO PANEL + LIVE SCORE (sticky) -->
+    <div class="hidden md:block w-80">
+        <div class="sticky top-6 space-y-4 text-xs">
+            <!-- Quiz Info -->
+            <div class="bg-white rounded-xl shadow-lg border border-slate-100 p-4">
+                <h3 class="text-lg font-semibold text-slate-900 mb-2">Quiz Info</h3>
+                <div class="space-y-3">
+                    <div>
+                        <p class="text-sm text-slate-500">Learner's Name</p>
+                        <p class="font-medium text-slate-900">{{data.learner_id}}</p>
+                    </div>
+                    <div class="space-y-3 grid grid-cols-2">
+                        <div>
+                            <p class="text-sm text-slate-500">Language</p>
+                            <p class="font-medium text-slate-900">{{data.language|title}}</p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-slate-500">Total Items</p>
+                            <p class="font-medium text-slate-900">{{data.no_of_question}}</p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-slate-500">Quiz Type</p>
+                            <p class="font-medium text-slate-900">{{data.type|title}} Quiz</p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-slate-500">Word Length </p>
+                            <p class="font-medium text-slate-900">{{data.words_length}}</p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-slate-500">Time Limit</p>
+                            <p class="font-medium text-slate-900">{{data.time_limit}} min</p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-slate-500">Session Date</p>
+                            <p class="font-medium text-slate-900">{{now|date:"F j, Y"}}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Live Score -->
+            <div class="bg-gradient-to-br from-indigo-50 to-indigo-100 rounded-xl shadow-lg border border-indigo-200 p-3">
+                <div class="flex justify-between items-center mb-2">
+                    <!-- <p class="text-sm text-indigo-700">Correctness</p> -->
+                    <h3 class="text-lg font-semibold text-indigo-900">Live Overall Score</h3>
+                    <p class="text-xl font-bold" id="overall_score_el"></p>
+                </div>
+                <div class="space-y-3">
+                    <div class="flex justify-between items-center">
+                        <p class="text-sm text-indigo-700">Correctness</p>
+                        <p class="text-xl font-bold" id="correctness_el"></p>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <p class="text-sm text-indigo-700">Pronunciation</p>
+                        <p class="text-xl font-bold" id="pronunciation_el"></p>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <p class="text-sm text-indigo-700">Pauses</p>
+                        <p class="text-xl font-bold" id="pauses_el"></p>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <p class="text-sm text-indigo-700">WPM</p>
+                        <p class="text-xl font-bold" id="wpm_el"></p>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <p class="text-sm text-indigo-700">Stutters</p>
+                        <p class="text-xl font-bold text-indigo-900" id="stutters_el"></p>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <p class="text-sm text-indigo-700">Repitition</p>
+                        <p class="text-xl font-bold text-indigo-900" id="repetition_el"></p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+<script>
+    corrEl = document.getElementById("correctness_el");
+    pronEl = document.getElementById("pronunciation_el");
+    pauseEl = document.getElementById("pauses_el");
+    speedEl = document.getElementById("wpm_el");
+    stutEl = document.getElementById("stutters_el");
+    repEl = document.getElementById("repetition_el");
+    overallEl = document.getElementById("overall_score_el");
+    
+    const totalQuestions = parseInt("{{data.no_of_question}}");
+    const maxCorrectnessScore = totalQuestions * 4;
+    const maxPronunciationScore = totalQuestions * 2;
+    
+    if(overallEl.textContent === ""){
+        corrEl.textContent = "0";
+        pronEl.textContent = "0";
+        pauseEl.textContent = "0";
+        speedEl.textContent = "0";
+        stutEl.textContent = "0";
+        repEl.textContent = "0";
+        overallEl.textContent = "0";
+    }
+
+    let wpmTimers = {}; 
+    
+    let sentencesData = [];
+    if ("{{data.type}}" === "sentences") {
+        document.querySelectorAll(".p-5 .font-bold").forEach((el) => {
+            sentencesData.push(el.textContent.trim());
+        });
+    }
+
+    function countWords(text) {
+        return text.trim().split(/\s+/).length;
+    }
+
+    document.querySelectorAll(".wpm_start_btn").forEach((btn, index) => {
+        const container = btn.closest(".grid").parentElement;
+        const sentence = sentencesData[index] || "";
+        const wordCount = countWords(sentence);
+        
+        const startBtn = btn;
+        const stopBtn = container.querySelector(".wpm_stop_btn");
+        const speedInput = container.querySelector(".speed_input");
+        const timerDisplay = container.querySelector(".wpm_timer");
+        const wpmTimeInput = container.querySelector(".wpm_time");
+        
+        let timerInterval = null;
+        let startTime = null;
+        let elapsedSeconds = 0;
+
+        startBtn.addEventListener("click", (e) => {
+            e.preventDefault();
+            startTime = Date.now();
+            elapsedSeconds = 0;
+            startBtn.disabled = true;
+            stopBtn.disabled = false;
+            
+            timerInterval = setInterval(() => {
+                elapsedSeconds = Math.floor((Date.now() - startTime) / 1000);
+                const mins = Math.floor(elapsedSeconds / 60);
+                const secs = elapsedSeconds % 60;
+                timerDisplay.textContent = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+            }, 100);
+        });
+
+        stopBtn.addEventListener("click", (e) => {
+            e.preventDefault();
+            clearInterval(timerInterval);
+            startBtn.disabled = false;
+            stopBtn.disabled = true;
+            
+            if (elapsedSeconds > 0 && wordCount > 0) {
+                const minutes = elapsedSeconds / 60;
+                const wpm = Math.round(wordCount / minutes);
+                speedInput.value = wpm;
+                wpmTimeInput.value = elapsedSeconds;
+                
+                updateAverageWPM();
+                updateOverallScore();
+            }
+        });
+    });
+
+    function updateAverageWPM() {
+        let totalWpm = 0;
+        let count = 0;
+        document.querySelectorAll(".speed_input").forEach((input) => {
+            if (input.value && parseInt(input.value) > 0) {
+                totalWpm += parseInt(input.value);
+                count += 1;
+            }
+        });
+        let avgWpm = count > 0 ? Math.round(totalWpm / count) : 0;
+        speedEl.textContent = avgWpm;
+    }
+
+    document.getElementById("view_score_button").addEventListener("click", () => {
+        const view_final_score_modal = document.getElementById("view_final_score_modal");
+        
+        const corrValue = corrEl.textContent;
+        const pronValue = pronEl.textContent;
+        const pauseValue = pauseEl.textContent;
+        const speedValue = speedEl.textContent;
+        const stutValue = stutEl.textContent;
+        const repValue = repEl.textContent;
+        const overallValue = overallEl.textContent;
+        const comments = document.getElementById("comments").value;
+        
+        view_final_score_modal.querySelector('input[name="name"]').value = "{{data.learner_id}}";
+        view_final_score_modal.querySelector('input[name="quiz_language"]').value = "{{data.language|title}}";
+        view_final_score_modal.querySelector('input[name="type"]').value = "{{data.type|title}}";
+        view_final_score_modal.querySelector('input[name="number_of_questions"]').value = "{{data.no_of_question}}";
+        view_final_score_modal.querySelector('input[name="words_length"]').value = "{{data.words_length}}";
+        view_final_score_modal.querySelector('input[name="time_limit"]').value = "{{data.time_limit}}";
+        view_final_score_modal.querySelector('input[name="date"]').value = "{% now 'F j, Y' %}";
+        view_final_score_modal.querySelector('input[name="stutter_score"]').value = stutValue;
+        view_final_score_modal.querySelector('input[name="repetition_score"]').value = repValue;
+        view_final_score_modal.querySelector('input[name="speed_score"]').value = speedValue;
+        view_final_score_modal.querySelector('input[name="pause_score"]').value = pauseValue;
+        view_final_score_modal.querySelector('input[name="correctness_score"]').value = corrValue;
+        view_final_score_modal.querySelector('input[name="pronunciation_score"]').value = pronValue;
+        view_final_score_modal.querySelector('input[name="overall_score"]').value = overallValue;
+        view_final_score_modal.querySelector('textarea[name="quiz_comments"]').value = comments;
+        
+        view_final_score_modal.showModal();
+    });
+
+    async function getAudio(word) {
+        try {
+            const resp = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`);
+            const data = await resp.json();
+            const phonetics = data[0]?.phonetics || [];
+            let audioUrl = "";
+            for (let p of phonetics) {
+                if (p.audio) {
+                    audioUrl = p.audio;
+                    break;
+                }
+            }
+            if (!audioUrl) {
+                alert("No pronunciation audio found for: " + word);
+                return;
+            }
+            const audio = new Audio(audioUrl);
+            audio.play();
+        } catch (err) {
+            console.error(err);
+            alert("Error retrieving audio.");
+        }
+    }
+
+    function updateOverallScore(){
+        let corr = parseInt(corrEl.textContent) || 0;
+        let pron = parseInt(pronEl.textContent) || 0;
+        let stut = parseFloat(stutEl.textContent) || 0;
+        let rep = parseFloat(repEl.textContent) || 0;
+        let pause = parseFloat(pauseEl.textContent) || 0;
+        let wpm = parseInt(speedEl.textContent) || 0;
+        
+        const quizType = "{{data.type}}";
+        let overall = 0;
+
+        if (quizType === "words") {
+            overall = (corr * 0.60) + (pron * 0.40);
+        } else if (quizType === "sentences") {
+            // WPM: 25% weight, Pauses: 20% weight, Stutters: 30% weight, Repetition: 25% weight
+            let wpmScore = Math.min(100, (wpm / 150) * 100);
+            let pauseQuality = Math.max(0, 100 - (pause * 3));
+            let stutterQuality = Math.max(0, 100 - (stut * 5));
+            let repetitionQuality = Math.max(0, 100 - (rep * 10));
+            overall = (wpmScore * 0.25) + (pauseQuality * 0.20) + (stutterQuality * 0.30) + (repetitionQuality * 0.25);
+        }
+        overall = Math.max(0, Math.min(100, Math.round(overall))); 
+        overallEl.textContent = overall;
+        changeColor(overallEl, overall);
+    }
+
+    function changeColor(element, average){
+        element.classList.remove("text-indigo-700","text-green-700","text-yellow-600","text-red-600");
+        if(average > 90){
+            element.classList.add("text-indigo-900");
+        }else if(average > 75){
+            element.classList.add("text-green-700");
+        }else if(average > 50){
+            element.classList.add("text-yellow-600");
+        }else{
+            element.classList.add("text-red-600");
+        }
+    }
+
+    document.querySelectorAll(".correctness_select").forEach((select) => {
+        select.addEventListener("change", () => {
+            let total = 0;
+            let count = 0;
+            document.querySelectorAll(".correctness_select").forEach((select) => {
+                if (select.value && Number.isInteger(parseInt(select.value))) {
+                    total += parseInt(select.value);
+                    count += 1;
+                }
+            });
+            let avg = Math.round((total / maxCorrectnessScore) * 100);
+            changeColor(corrEl, avg);
+            corrEl.textContent = avg;
+            updateOverallScore();
+        });
+    });
+
+    document.querySelectorAll(".pronunciation_select").forEach((select) => {
+        select.addEventListener("change", () => {
+            let total = 0;
+            let count = 0;
+            document.querySelectorAll(".pronunciation_select").forEach((select) => {
+                if (select.value && Number.isInteger(parseInt(select.value))) {
+                    console.log(select.value)
+                    total += parseInt(select.value);
+                    count += 1;
+                }
+            });
+            let avg = Math.round((total / maxPronunciationScore) * 100);
+            changeColor(pronEl, avg);
+            pronEl.textContent = avg;
+            updateOverallScore();
+        });
+    });
+
+    document.querySelectorAll(".stutters_input").forEach((input) => {
+        input.addEventListener("change", () => {
+            let total = 0;
+            let count = 0;
+            document.querySelectorAll(".stutters_input").forEach((input) => {
+                if (input.value && Number.isInteger(parseInt(input.value))) {
+                    console.log(input.value)
+                    total += parseInt(input.value);
+                    count += 1;
+                }
+            });
+            let avg = count > 0 ? Math.round((total / count) * 100) / 100 : 0;
+            stutEl.textContent = avg;
+            updateOverallScore();
+        });
+    });
+
+    document.querySelectorAll(".repetition_input").forEach((input) => {
+        input.addEventListener("change", () => {
+            let total = 0;
+            let count = 0;
+            document.querySelectorAll(".repetition_input").forEach((input) => {
+                if (input.value && Number.isInteger(parseInt(input.value))) {
+                    console.log(input.value)
+                    total += parseInt(input.value);
+                    count += 1;
+                }
+            });
+            let avg = count > 0 ? Math.round((total / count) * 100) / 100 : 0;
+            repEl.textContent = avg;
+            updateOverallScore();
+        });
+    });
+
+    document.querySelectorAll(".pauses_input").forEach((input) => {
+        input.addEventListener("change", () => {
+            let total = 0;
+            let count = 0;
+            document.querySelectorAll(".pauses_input").forEach((input) => {
+                if (input.value && Number.isInteger(parseInt(input.value))) {
+                    total += parseInt(input.value);
+                    count += 1;
+                }
+            });
+            let avg = count > 0 ? Math.round((total / count) * 100) / 100 : 0;
+            pauseEl.textContent = avg;
+            updateOverallScore();
+        });
+    });
+</script>
+{% endblock body %}

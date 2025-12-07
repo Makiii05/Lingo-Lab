@@ -1,0 +1,61 @@
+{% extends 'Lingolab/components/layout.html' %}
+
+
+{% block body %}
+
+    <div class="space-y-8">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <h1 class="text-3xl font-extrabold text-slate-900">Learner List</h1>
+            <a onclick="register_learner_modal.showModal()" class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-xl shadow-lg text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-plus mr-2"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+                Register Learner
+            </a>
+        </div>
+        <div id="learner-list" class="space-y-4">
+            
+            {% for learner in learners %}
+                
+            <div class="bg-white shadow-xl rounded-2xl border border-slate-100 p-4 sm:p-6 hover:shadow-2xl transition-all transform hover:-translate-y-0.5">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-4">
+                        <div class="flex-shrink-0">
+                            <img class="h-16 w-16 rounded-full object-cover border-4 border-white shadow-sm" src="{{ learner.get_profile_picture_url }}" alt="{{ learner.name }}" onerror="this.src='https://ui-avatars.com/api/?name={{ learner.name }}&background=4f46e5&color=fff'"/>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-semibold text-slate-900">{{ learner.name }}</h3>
+                            <div class="mt-1 flex items-center text-sm text-slate-500">
+                                <span class="mr-3 font-medium">{{ learner.grade }}</span>
+                                <span class="w-1.5 h-1.5 bg-slate-400 rounded-full mr-3"></span>
+                                <span>{{ learner.age }} years old</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex gap-2">
+                        <button data-learner-id="{{ learner.id }}" class="quiz_me_now_button inline-flex items-center p-3 border border-slate-300 shadow-sm text-sm leading-4 font-medium rounded-xl text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-play sm:hidden"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                            <span class="hidden sm:inline">Quiz Me Now</span>
+                        </button>                    
+                        <a href="{% url 'tracker' learner.id %}" class="inline-flex items-center p-3 border border-slate-300 shadow-sm text-sm leading-4 font-medium rounded-xl text-slate-700 bg-white hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-bar-chart-2 sm:hidden"><line x1="18" x2="18" y1="20" y2="10"/><line x1="12" x2="12" y1="20" y2="4"/><line x1="6" x2="6" y1="20" y2="14"/></svg>
+                            <span class="hidden sm:inline">View Stats</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            {% endfor %}
+                
+        </div>
+    </div>
+    <script>
+        document.querySelectorAll(".quiz_me_now_button").forEach(button => {
+            button.addEventListener("click", function() {
+                document.querySelectorAll('input.quiz-input').forEach(input => input.value = '');
+                const learnerId = this.getAttribute("data-learner-id");
+                const modal = document.getElementById("quiz_me_now_modal");
+                modal.querySelector('input[name="learner_id"]').value = learnerId;
+                modal.showModal();
+            });
+        });
+    </script>
+{% endblock body %}

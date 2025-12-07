@@ -1,0 +1,75 @@
+<div class="lg:hidden flex items-center justify-between bg-white border-b border-slate-200 h-16 px-4 sticky top-0 z-30">
+    <div class="flex items-center space-x-2">
+        <div class="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center text-white font-bold">
+            L
+        </div>
+        <span class="font-semibold text-slate-900">LingoLab</span>
+    </div>
+
+    <label for="sidebar" class="cursor-pointer p-2 hover:bg-slate-100 rounded-md">
+        <i class="bi bi-list text-2xl"></i>
+    </label>
+</div>
+
+<input type="checkbox" id="sidebar" class="peer hidden">
+
+<label for="sidebar" class="fixed inset-0 bg-slate-900/50 z-40 hidden peer-checked:block lg:hidden backdrop-blur-sm"></label>
+
+<aside
+    class="sidebar-panel fixed top-0 left-0 w-64 bg-white border-r border-slate-200 h-full transform -translate-x-full
+           peer-checked:translate-x-0 lg:translate-x-0 transition-transform duration-300 z-50 shadow-xl lg:shadow-none">
+
+    <div class="hidden lg:flex items-center h-16 px-6 border-b border-slate-200">
+        <div class="w-9 h-9 bg-indigo-600 rounded-lg text-white flex items-center justify-center font-bold">L</div>
+        <span class="ml-3 text-xl font-bold text-slate-900">LingoLab</span>
+    </div>
+
+    <div class="lg:hidden flex items-center justify-between px-4 h-16 border-b border-slate-200">
+        <div class="flex items-center space-x-3">
+            <div class="w-9 h-9 bg-indigo-600 rounded-lg text-white flex items-center justify-center font-bold">L</div>
+            <span class="text-lg font-bold">LingoLab</span>
+        </div>
+
+        <label for="sidebar" class="cursor-pointer text-xl p-2 hover:bg-slate-100 rounded-md">
+            <i class="bi bi-x-lg"></i>
+        </label>
+    </div>
+    <nav class="px-3 mt-4 space-y-1">
+
+        <a href="{% url 'dashboard' %}"
+            class="flex items-center px-4 py-3 rounded-lg font-medium transition-colors
+            {% if request.resolver_match.url_name == 'dashboard' %}
+                text-indigo-600 bg-indigo-50
+            {% else %}
+                text-slate-600 hover:bg-slate-100
+            {% endif %}
+            ">
+            <i class="bi bi-grid-1x2 mr-3 text-lg"></i>
+            Dashboard
+        </a>
+
+        <a href="{% url 'learners' %}"
+            class="flex items-center px-4 py-3 rounded-lg font-medium transition-colors
+            {% if request.resolver_match.url_name == 'learners' %}
+                text-indigo-600 bg-indigo-50
+            {% else %}
+                text-slate-600 hover:bg-slate-100
+            {% endif %}
+            ">
+            <i class="bi bi-people mr-3 text-lg"></i>
+            Learner List
+        </a>
+
+    </nav>
+
+
+    <div class="mt-auto border-t border-slate-200 p-4 absolute bottom-0 w-full bg-white">
+        <a href="#" class="flex items-center text-slate-600 px-2 py-2 hover:bg-slate-100 rounded-lg font-medium transition-colors">
+            <i class="bi bi-person-circle mr-3 text-lg"></i> {{ request.user.username }}
+        </a>
+
+        <a href="{% url 'logout' %}" class="flex items-center text-red-600 px-2 py-2 mt-1 hover:bg-red-50 rounded-lg font-medium transition-colors">
+            <i class="bi bi-box-arrow-right mr-3 text-lg"></i> Logout
+        </a>
+    </div>
+</aside>

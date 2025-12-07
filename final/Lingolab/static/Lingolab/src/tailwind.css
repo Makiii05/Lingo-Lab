@@ -1,0 +1,5 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* DaisyUI is loaded automatically through the plugin */
