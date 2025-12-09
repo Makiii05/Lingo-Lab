@@ -31,16 +31,17 @@ class QuizTaken(models.Model):
     words_length = models.PositiveIntegerField(default=0)
     time_limit = models.PositiveIntegerField(help_text="seconds", default=0)
     date = models.DateTimeField(default=timezone.now)
-    # metrics: for both
+    # wpm for sentence
+    speed = models.DecimalField(max_digits=6, decimal_places=2, null=True, blank=True)
+    # accuracy for word
+    correctness = models.PositiveSmallIntegerField(null=True, blank=True)
+    # miscues
     stutter = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
     repetition = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
-    # metrics: for sentence
-    speed = models.DecimalField(max_digits=6, decimal_places=2, null=True, blank=True)
     pause = models.DecimalField(max_digits=6, decimal_places=2, null=True, blank=True)
-    # metrics: for word
-    correctness = models.PositiveSmallIntegerField(null=True, blank=True)
     pronunciation = models.PositiveSmallIntegerField(null=True, blank=True)
-    # metrics: for overall
+    # other
+    total_words = models.PositiveIntegerField(default=0)
     comment = models.TextField(null=True, blank=True)
     score = models.DecimalField(default=0, max_digits=6, decimal_places=2)
 

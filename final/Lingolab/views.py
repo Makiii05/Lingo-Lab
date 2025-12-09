@@ -4,7 +4,7 @@ from django.http import JsonResponse, HttpResponse, HttpResponseRedirect
 from django.views.decorators.csrf import csrf_exempt
 from django.urls import reverse
 from django.db import IntegrityError
-from django.db.models import Avg, Count
+from django.db.models import Avg, Count, Sum
 from django.utils import timezone
 from datetime import timedelta
 import os
@@ -109,7 +109,7 @@ def dashboard(request):
         return HttpResponseRedirect(reverse("signin"))
 
     mentor_id = request.user.id
-    learners = Learner.objects.filter(mentor_id=mentor_id).count()
+    learners = Learner.objects.filter(mentor_id=mentor_id)
     quizzes_taken = QuizTaken.objects.filter(learner_id__mentor_id=mentor_id).count()
     ave_score = QuizTaken.objects.filter(learner_id__mentor_id=mentor_id).aggregate(Avg('score'))['score__avg'] or 0
     quizzes = QuizTaken.objects.filter(learner_id__mentor_id=mentor_id).order_by('-date')[:10]
@@ -136,7 +136,10 @@ def dashboard(request):
         })
     
     return render(request, 'Lingolab/dashboard.html',{
-        "learners_count" : learners,
+        "learners_count" : learners.count(),
+        "independent_count" : learners.filter(score__gte=97).count(),
+        "instructional_count" : learners.filter(score__gte=90, score__lt=97).count(),
+        "frustration_count" : learners.filter(score__lt=90).count(),
         "quizzes_taken_count": quizzes_taken,
         "ave_score": round(ave_score, 2),
         "quizzes": quizzes,
@@ -157,16 +160,29 @@ def tracker(request, learner_id):
     if not request.user.is_authenticated:
         return HttpResponseRedirect(reverse("signin"))
 
+
     learner = Learner.objects.get(id=learner_id, mentor_id=request.user)
     speed = QuizTaken.objects.filter(learner_id=learner_id).aggregate(Avg('speed'))['speed__avg'] or 0  
     score = QuizTaken.objects.filter(learner_id=learner_id).aggregate(Avg('score'))['score__avg'] or 0
-    stutter = QuizTaken.objects.filter(learner_id=learner_id).aggregate(Avg('stutter'))['stutter__avg'] or 0
+    level = "Independent" if score >= 97 else ( "Instructional" if 90 <= score < 97 else "Frustration") 
+    no_words = QuizTaken.objects.filter(learner_id=learner_id).aggregate(Sum('total_words'))['total_words__sum'] or 0
+    miscues = QuizTaken.objects.filter(learner_id=learner_id).aggregate(
+        total_miscues=(
+            Sum('stutter') +
+            Sum('repetition') +
+            Sum('pause') +
+            Sum('pronunciation')
+        )
+    )['total_miscues']
+
 
     return render(request, 'Lingolab/tracker.html', {
         "learner": learner,
         "wpm": round(speed, 2),
         "score": round(score, 2),
-        "stutter": round(stutter, 2),
+        "no_words": no_words,
+        "miscues": miscues if miscues is not None else 0,
+        "level": level,
         "quizzes": QuizTaken.objects.filter(learner_id=learner_id).order_by('-date')
     })
 
@@ -248,7 +264,7 @@ def submit_score(request):
 
     if request.method == "POST":
         # Create QuizTaken record
-        learner_id = request.POST.get("name")
+        learner_id = request.POST.get("id")
         try:
             learner = Learner.objects.get(id=learner_id)
         except Learner.DoesNotExist:
@@ -258,13 +274,17 @@ def submit_score(request):
         language = request.POST.get("quiz_language")
         quiz_type = request.POST.get("type")
         number_of_questions = request.POST.get("number_of_questions")
-        words_length = request.POST.get("words_length")
-        time_limit = request.POST.get("time_limit")
+        words_length = request.POST.get("words_length", 0)
+        total_words = request.POST.get("total_words", 0)
+
         stutter_score = float(request.POST.get("stutter_score", 0))
         repetition_score = float(request.POST.get("repetition_score", 0))
-        correctness_score = request.POST.get("correctness_score", "0").rstrip('%')
-        pronunciation_score = request.POST.get("pronunciation_score", "0").rstrip('%')
-        overall_score = request.POST.get("overall_score", "0").rstrip('%')
+        pause_score = float(request.POST.get("pause_score", 0))
+        pronunciation_score = int(request.POST.get("pronunciation_score", 0))
+
+        correctness_score = int(request.POST.get("correctness_score", 0).rstrip('%'))
+        wpm_score = float(request.POST.get("speed_score", 0).rstrip('%'))
+        overall_score = float(request.POST.get("overall_score", 0).rstrip('%'))
         comments = request.POST.get("quiz_comments", "")
         
         quiz_taken = QuizTaken(
@@ -273,16 +293,24 @@ def submit_score(request):
             type=quiz_type,
             number_of_questions=number_of_questions,
             words_length=words_length,
-            time_limit=time_limit,
             stutter=stutter_score,
             repetition=repetition_score,
-            correctness=float(correctness_score),
-            pronunciation=float(pronunciation_score),
-            score=float(overall_score),
-            comment=comments
+            pause=pause_score,
+            pronunciation=pronunciation_score,
+            correctness=correctness_score,
+            speed=wpm_score,
+            score=overall_score,
+            comment=comments,
+            total_words=total_words
         )
         quiz_taken.save()
         
+        update_learner = Learner.objects.get(id=learner_id)
+        # Update learner's score
+        ave_score = QuizTaken.objects.filter(learner_id=learner_id).aggregate(Avg('score'))['score__avg'] or 0
+        update_learner.score = round(ave_score, 2)  
+        update_learner.save()
+
         # Redirect to tracker
         return HttpResponseRedirect(reverse("tracker", args=[learner.id]))
     

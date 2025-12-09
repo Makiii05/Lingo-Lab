@@ -100,11 +100,7 @@
             </label>
             <label class="floating-label">
                 <span>Word's Length</span>
-                <input name="words_length" required type="number" placeholder="Word's Length (N/A if sentence type)" class="input input-md w-full border border-neutral-300 p-3 rounded-lg focus:placeholder-transparent quiz-input" />
-            </label>
-            <label class="floating-label">
-                <span>Time Limit(mins)</span>
-                <input name="time_limit" required type="number" placeholder="Time Limit(mins)" class="input input-md w-full border border-neutral-300 p-3 rounded-lg focus:placeholder-transparent quiz-input" />
+                <input name="words_length" required type="number" placeholder="Word's Length (0 if sentence type)" class="input input-md w-full border border-neutral-300 p-3 rounded-lg focus:placeholder-transparent quiz-input" />
             </label>
             <button class="btn text-white bg-indigo-600 hover:bg-indigo-700 w-full mt-2" id="generate_qr_code_button">Generate QR Code</button>
         <div class="modal-action">
@@ -183,7 +179,7 @@
                 <div class="grid grid-cols-3 gap-6">
                     <label class="floating-label">
                         <span>Learner's Id</span>
-                        <input name="name" type="text" readonly value="" class="input input-md w-full border border-neutral-300 p-3 rounded-lg focus:placeholder-transparent" />
+                        <input name="id" type="text" readonly value="" class="input input-md w-full border border-neutral-300 p-3 rounded-lg focus:placeholder-transparent" />
                     </label>
                     <label class="floating-label">
                         <span>Type</span>
@@ -195,19 +191,39 @@
                     </label>
                     <label class="floating-label">
                         <span>Word Length</span>
-                        <input name="words_length" type="text" readonly value="" class="input input-md w-full border border-neutral-300 p-3 rounded-lg focus:placeholder-transparent" />
-                    </label>
-                    <label class="floating-label">
-                        <span>Time Limit</span>
-                        <input name="time_limit" type="text" readonly value="" class="input input-md w-full border border-neutral-300 p-3 rounded-lg focus:placeholder-transparent" />
+                        <input name="final_words_length" type="text" readonly value="" class="input input-md w-full border border-neutral-300 p-3 rounded-lg focus:placeholder-transparent" />
                     </label>
                     <label class="floating-label">
                         <span>Language</span>
                         <input name="quiz_language" type="text" readonly value="" class="input input-md w-full border border-neutral-300 p-3 rounded-lg focus:placeholder-transparent" />
                     </label>
                     <label class="floating-label">
-                        <span>Date Taken</span>
-                        <input name="date" type="text" readonly value="" class="input input-md w-full border border-neutral-300 p-3 rounded-lg focus:placeholder-transparent" />
+                        <span>Total Words</span>
+                        <input name="total_words" type="text" readonly value="" class="input input-md w-full border border-neutral-300 p-3 rounded-lg focus:placeholder-transparent" />
+                    </label>
+                </div>
+                <div class="relative mb-6">
+                    <div class="h-px bg-slate-200 w-full"></div>
+                    <span class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-slate-50 px-2 text-slate-400 text-xs uppercase font-medium tracking-wider">
+                        Miscues
+                    </span>
+                </div>
+                <div class="grid grid-cols-4 gap-6">
+                    <label class="floating-label">
+                        <span>Stutters</span>
+                        <input name="stutter_score" type="number" readonly value="" class="input input-md w-full border border-neutral-300 p-3 rounded-lg focus:placeholder-transparent" />
+                    </label>
+                    <label class="floating-label">
+                        <span>Repitition</span>
+                        <input name="repetition_score" type="number" readonly value="" class="input input-md w-full border border-neutral-300 p-3 rounded-lg focus:placeholder-transparent" />
+                    </label>
+                    <label class="floating-label">
+                        <span>Pause</span>
+                        <input name="pause_score" type="number" readonly value="" class="input input-md w-full border border-neutral-300 p-3 rounded-lg focus:placeholder-transparent" />
+                    </label>
+                    <label class="floating-label">
+                        <span>Mispronunciation</span>
+                        <input name="pronunciation_score" type="number" readonly value="" class="input input-md w-full border border-neutral-300 p-3 rounded-lg focus:placeholder-transparent" />
                     </label>
                 </div>
                 <div class="relative mb-6">
@@ -218,31 +234,15 @@
                 </div>
                 <div class="grid grid-cols-3 gap-6">
                     <label class="floating-label">
-                        <span>Stutters</span>
-                        <input name="stutter_score" type="number" readonly value="" class="input input-md w-full border border-neutral-300 p-3 rounded-lg focus:placeholder-transparent" />
-                    </label>
-                    <label class="floating-label">
-                        <span>Repitition</span>
-                        <input name="repetition_score" type="number" readonly value="" class="input input-md w-full border border-neutral-300 p-3 rounded-lg focus:placeholder-transparent" />
-                    </label>
-                    <label class="floating-label">
-                        <span>Speed (for sentence quiz)</span>
-                        <input name="speed_score" type="number" readonly value="" class="input input-md w-full border border-neutral-300 p-3 rounded-lg focus:placeholder-transparent" />
-                    </label>
-                    <label class="floating-label">
-                        <span>Pause (for sentence quiz)</span>
-                        <input name="pause_score" type="number" readonly value="" class="input input-md w-full border border-neutral-300 p-3 rounded-lg focus:placeholder-transparent" />
-                    </label>
-                    <label class="floating-label">
-                        <span>Correctness (for word quiz)</span>
+                        <span>Fluency (for word quiz)</span>
                         <input name="correctness_score" type="number" readonly value="" class="input input-md w-full border border-neutral-300 p-3 rounded-lg focus:placeholder-transparent" />
                     </label>
                     <label class="floating-label">
-                        <span>Pronunciation (for word quiz)</span>
-                        <input name="pronunciation_score" type="number" readonly value="" class="input input-md w-full border border-neutral-300 p-3 rounded-lg focus:placeholder-transparent" />
+                        <span>Word Per Minute (for sentence quiz)</span>
+                        <input name="speed_score" type="number" readonly value="" class="input input-md w-full border border-neutral-300 p-3 rounded-lg focus:placeholder-transparent" />
                     </label>
                     <label class="floating-label">
-                        <span>Overall Score</span>
+                        <span>Overall Score (DO 14 - Phil IRI )</span>
                         <input name="overall_score" type="number" readonly value="" class="input input-md w-full border border-neutral-300 p-3 rounded-lg focus:placeholder-transparent" />
                     </label>
                 </div>
