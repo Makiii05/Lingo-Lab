@@ -240,7 +240,7 @@ def get_tagalog_word(request, length, number):
     length = int(length)
     filtered_words = [w for w in tagalog_words if len(w) == length]
     words = random.sample(filtered_words, min(number, len(filtered_words)))
-    return JsonResponse({"words": words})
+    return JsonResponse({"question": words})
 
 def submit_score(request):
     if not request.user.is_authenticated:
