@@ -33,7 +33,7 @@
                                 {% if data.type == "sentences" %}
                                 <div class="place-self-center">
                                     <label class="block text-sm font-medium text-slate-700 mb-1 text-center">Word Per Minute (Auto Fill)</label>
-                                    <input type="text" readonly name="wpm{{forloop.counter}}" 
+                                    <input type="number" readonly name="wpm{{forloop.counter}}" 
                                         class="wpm_input mt-1 block w-full border border-slate-300 rounded-xl shadow-sm py-2 px-3 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                                         placeholder="Calculate through Learner" />
                                 </div>
@@ -231,9 +231,11 @@
     </div>
 
 </div>
-
+<script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
 <script>
     document.querySelectorAll(".carousel-item")[0].style.display = "flex"
+    // socket
+    const socket = io("http://192.168.254.111:3001");
     // print this all
     let learner_id = "{{ data.learner_id }}";
     let language = "{{ data.language }}";
@@ -251,7 +253,11 @@
     let total_words = 0;
     let comment = "";
 
-    let sentences = ["{{data.question}}"];
+    let sentences = [
+        {% for question in data.question %}
+        "{{ question }}",
+        {% endfor %}
+    ];
     sentences.forEach(sentence => {
         total_words += sentence.trim().split(/\s+/).length;
     });
@@ -336,6 +342,16 @@
             });
             // calculate as percentage: (total score / (number of items * 4)) * 100
             correctness = totalItems > 0 ? Math.round((totalCorrectness / (totalItems * 4)) * 100) : 0;
+        }else{
+            let totalWpm = 0;
+            let totalItems = 0;
+            document.querySelectorAll(".wpm_input").forEach(input => {
+                if (input.value){
+                    totalWpm += parseInt(input.value);
+                    totalItems += 1;
+                }
+            });
+            wpm = totalItems > 0 ? Math.round(totalWpm / totalItems) : 0;
         }
 
         //calc overall score
@@ -379,10 +395,21 @@
         document.getElementById("view_final_score_modal").showModal()
     });
 
+    if (quiz_type === "sentences") {
+        wpmInput = document.querySelectorAll('.wpm_input');
+        socket.on("mentor_elapsed", (data) => {
+            const wordsCount = sentences[data.index].trim().split(/\s+/).length
+            itemWpm = Math.round((wordsCount / data.elapsed) * 60);
+            wpmInput[data.index].value = itemWpm;
+            updateOverallScore();
+        });
+    }
+
     // Initialize on page load
     document.addEventListener("DOMContentLoaded", () => {
         updateOverallScore()
         initializeMiscuesButtons()
     });
 </script>
+
 {% endblock body %}

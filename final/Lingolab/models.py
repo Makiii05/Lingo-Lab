@@ -45,5 +45,8 @@ class QuizTaken(models.Model):
     comment = models.TextField(null=True, blank=True)
     score = models.DecimalField(default=0, max_digits=6, decimal_places=2)
 
-    
-    
+class currentQuizzes(models.Model):
+    learner_id = models.ForeignKey(Learner, related_name="current_quizzes", on_delete=models.CASCADE)
+    item_no = models.PositiveIntegerField(default=0)
+    item = models.TextField(blank=True)
+    speed = models.IntegerField(null=True, blank=True)

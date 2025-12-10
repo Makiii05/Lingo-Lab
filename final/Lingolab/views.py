@@ -31,7 +31,7 @@ with open(word_file_path, encoding='utf-8') as f:
     tagalog_words = [w.strip() for w in f if w.strip()]
 
 
-from .models import User, Learner, QuizTaken
+from .models import User, Learner, QuizTaken, currentQuizzes
 
 def generate_random_filename(file):
     """

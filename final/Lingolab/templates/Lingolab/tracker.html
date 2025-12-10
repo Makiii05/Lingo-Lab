@@ -78,9 +78,7 @@
                         <div class="grid grid-cols-2 gap-2 mb-4 p-3">
                             <span class="font-medium text-slate-600"><b>Language:</b> {{ quiz.language|title }}</span>
                             <span class="font-medium text-slate-600"><b>Total {{ quiz.type|title }}:</b> {{ quiz.number_of_questions }}</span>
-                            {% if quiz.type|lower == "words" %}
-                            <span class="font-medium text-slate-600"><b>{{ quiz.type|title }} Length:</b> {{ quiz.words_length }} letters</span>
-                            {% endif %}                                
+                            
                         </div>
 
                         <h4 class="text-base font-semibold mt-6 mb-2">Scores</h4>
@@ -104,7 +102,7 @@
                         <span class="font-medium text-slate-600 mx-3"><b>Overall Score:</b> {{ quiz.score }}%</span>
                     </div>
                     <div class="flex gap-3">
-                        <button data-id="{{ quiz.id }}" dsata-comment="{{ quiz.comment }}" class="openComment inline-flex items-center px-4 py-2 border border-slate-300 shadow-sm text-sm font-medium rounded-xl text-slate-700 bg-white hover:bg-slate-100 focus:outline-none">
+                        <button data-id="{{ quiz.id }}" data-comment="{{ quiz.comment }}" class="openComment inline-flex items-center px-4 py-2 border border-slate-300 shadow-sm text-sm font-medium rounded-xl text-slate-700 bg-white hover:bg-slate-100 focus:outline-none">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-message-circle mr-2"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg>
                             View Recording
                         </button>
